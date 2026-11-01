@@ -1,4 +1,5 @@
 import sys
+import os
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -417,11 +418,42 @@ with st.sidebar:
     st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
 
     st.markdown("**📁 Data Source**")
-    uploaded_file = st.file_uploader(
-        "Upload Log File", type=["csv", "json", "txt", "log"],
-        help="CSV, JSON, or syslog text format",
-    )
-    use_sample = st.button("⚡ Use Sample Data", use_container_width=True)
+    data_mode = st.radio("Mode", ["📂 Upload / Sample", "📡 Live Feed"], horizontal=True)
+
+    uploaded_file = None
+    use_sample = False
+    live_feed_active = False
+    _LIVE_FILE = os.path.join(os.path.dirname(__file__), "live_feed.csv")
+
+    if data_mode == "📂 Upload / Sample":
+        uploaded_file = st.file_uploader(
+            "Upload Log File", type=["csv", "json", "txt", "log"],
+            help="CSV, JSON, or syslog text format",
+        )
+        use_sample = st.button("⚡ Use Sample Data", use_container_width=True)
+    else:
+        live_feed_active = True
+        if os.path.exists(_LIVE_FILE):
+            _live_size = os.path.getsize(_LIVE_FILE)
+            _live_rows = max(0, sum(1 for _ in open(_LIVE_FILE)) - 1)
+            st.markdown(f"""
+            <div style="background:#051a0d;border:1px solid #00ff88;border-radius:8px;
+                        padding:0.5rem 1rem;font-family:'Share Tech Mono',monospace;
+                        font-size:0.72rem;color:#00ff88;text-align:center;line-height:1.9;">
+                📡 LIVE FEED CONNECTED<br>
+                <span style="color:#8ab0c8;">{_live_rows:,} events · {_live_size/1024:.1f} KB</span>
+            </div>""", unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="background:#1a1200;border:1px solid #ffaa00;border-radius:8px;
+                        padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
+                        font-size:0.72rem;color:#ffaa00;line-height:1.8;">
+                ⚠️ No live feed found.<br>Run in a terminal:<br>
+                <code style="color:#00d4ff;">python live_log_generator.py</code>
+            </div>""", unsafe_allow_html=True)
+        refresh_secs = st.slider("Auto-refresh every", 5, 60, 10, step=5,
+                                 format="%d sec", key="_live_refresh")
+        st.caption(f"Dashboard refreshes every {refresh_secs}s automatically")
 
     st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
 
@@ -456,6 +488,7 @@ with st.sidebar:
     st.markdown("**⚙️ Detection Settings**")
     sensitivity_raw = st.slider("Sensitivity", 1, 10, 5, help="Higher = more alerts detected")
     sensitivity = sensitivity_raw / 20.0
+    st.session_state["_sensitivity"] = sensitivity
 
     st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
     threat_filter = st.multiselect(
@@ -479,7 +512,39 @@ if "explainer" not in st.session_state:
 
 trigger_analysis = False
 
-if use_sample or (uploaded_file is None and st.session_state["df_analysed"] is None):
+if live_feed_active:
+    if os.path.exists(_LIVE_FILE):
+        try:
+            raw_df = pd.read_csv(_LIVE_FILE, parse_dates=["timestamp"])
+            if len(raw_df) >= 10:
+                trigger_analysis = True
+                # Auto-refresh by scheduling a rerun after the chosen interval
+                time.sleep(0)  # yield to Streamlit
+            else:
+                st.info("Live feed starting up… waiting for more events.")
+                st.stop()
+        except Exception as e:
+            st.warning(f"Could not read live_feed.csv: {e}")
+            st.stop()
+    else:
+        st.markdown("""
+        <div style="background:#0d1526;border:2px dashed #1e3a5f;border-radius:16px;
+                    padding:2.5rem;text-align:center;margin:2rem 0;">
+            <div style="font-size:3rem;">📡</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:1rem;
+                        color:#00d4ff;margin:0.8rem 0;">LIVE FEED NOT STARTED</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;
+                        color:#8ab0c8;line-height:2;">
+                Open a new terminal and run:<br>
+                <code style="color:#00ff88;font-size:0.9rem;">
+                    cd "C:\\ps\\Projects\\Cyber Security\\ai_threat_hunter"<br>
+                    python live_log_generator.py
+                </code><br><br>
+                Then switch back here — the dashboard will connect automatically.
+            </div>
+        </div>""", unsafe_allow_html=True)
+        st.stop()
+elif use_sample or (uploaded_file is None and st.session_state["df_analysed"] is None):
     with st.spinner("Generating sample logs…"):
         raw_df = generate_sample_logs(n_normal=500)
     trigger_analysis = True
@@ -501,6 +566,13 @@ df = st.session_state["df_analysed"]
 if df is None:
     st.info("Upload a log file or click **⚡ Use Sample Data** to begin.")
     st.stop()
+
+# ── Persist live-feed state so tab is restored on page load ──────────────────
+if live_feed_active:
+    st.session_state["_live_feed_on"] = True
+    st.session_state["_live_refresh_secs"] = refresh_secs
+elif "_live_feed_on" not in st.session_state:
+    st.session_state["_live_feed_on"] = False
 
 threats_df = df[df["is_anomaly"] & df["anomaly_label"].isin(threat_filter)].copy()
 stats = ThreatDetector().get_threat_stats(df)
@@ -528,9 +600,9 @@ with c5:
     st.markdown(_metric_card("Unique Attackers", unique_attackers, "warning" if unique_attackers else "safe", "orange"), unsafe_allow_html=True)
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Overview", "🚨 Threat Log", "🤖 AI Analysis",
-    "🧭 Incident Response", "🕸️ Network Graph"
+    "🧭 Incident Response", "🕸️ Network Graph", "📡 Live Feed"
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -815,6 +887,203 @@ with tab5:
     )
     st.plotly_chart(fig_net, use_container_width=True)
     st.caption("🔴 Red nodes = threat sources  |  🔵 Blue = normal hosts  |  Red edges = attack traffic")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 6 — LIVE FEED  (fragment — only this panel refreshes, page stays still)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_LIVE_FILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "live_feed.csv")
+
+
+@st.fragment(run_every="5s")
+def _live_feed_panel():
+    """Runs every 5 s independently — does NOT trigger a full-page rerun."""
+    _is_live = st.session_state.get("_live_feed_on", False)
+    _secs    = st.session_state.get("_live_refresh_secs", 5)
+
+    if not _is_live:
+        st.markdown("""
+        <div style="background:#0d1526;border:2px dashed #1e3a5f;border-radius:16px;
+                    padding:3rem;text-align:center;margin:2rem 0;">
+            <div style="font-size:3rem;">📡</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;
+                        color:#00d4ff;letter-spacing:2px;margin:0.8rem 0;">ENABLE LIVE FEED MODE</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;
+                        color:#8ab0c8;line-height:2.2;">
+                In the sidebar → Data Source → switch to
+                <b style="color:#00ff88;">📡 Live Feed</b><br>
+                Then open a second terminal and run:<br><br>
+                <code style="color:#00ff88;background:#0a0e1a;padding:6px 18px;border-radius:6px;">
+                    python live_log_generator.py
+                </code>
+            </div>
+        </div>""", unsafe_allow_html=True)
+        return
+
+    # ── Read CSV fresh every tick ─────────────────────────────────────────────
+    if not os.path.exists(_LIVE_FILE_PATH):
+        st.warning("live_feed.csv not found. Start live_log_generator.py first.")
+        return
+
+    try:
+        live_raw = pd.read_csv(_LIVE_FILE_PATH, parse_dates=["timestamp"])
+    except Exception as e:
+        st.error(f"Could not read live feed: {e}")
+        return
+
+    if len(live_raw) < 10:
+        st.info(f"📡 Waiting for events… ({len(live_raw)} so far)")
+        return
+
+    # ── Run ML detection on latest data ──────────────────────────────────────
+    _sensitivity = st.session_state.get("_sensitivity", 0.25)
+    try:
+        _det = ThreatDetector(sensitivity=_sensitivity)
+        live_df = _det.analyze(live_raw)
+    except Exception as e:
+        st.error(f"Detection error: {e}")
+        return
+
+    live_threats = live_df[live_df["is_anomaly"]].copy()
+    _colours = {
+        "Port Scan": "#ffaa00", "Brute Force": "#ff4444",
+        "Data Exfiltration": "#ff2277", "C2 / Suspicious": "#aa44ff",
+        "Anomalous Traffic": "#00d4ff", "normal": "#1e3a5f",
+    }
+
+    # ── Metrics row ───────────────────────────────────────────────────────────
+    now_ts     = pd.Timestamp.now()
+    last_60    = live_df[live_df["timestamp"] >= now_ts - pd.Timedelta(seconds=60)]
+    threats_60 = last_60[last_60["is_anomaly"]]
+    total_mb   = live_df["bytes_sent"].sum() / 1_000_000
+    attackers  = live_threats["source_ip"].nunique()
+
+    lc1, lc2, lc3, lc4, lc5 = st.columns(5)
+    with lc1:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-label">Total Events</div>
+            <div class="metric-value cyan">{len(live_df):,}</div>
+        </div>""", unsafe_allow_html=True)
+    with lc2:
+        cls = "critical" if len(live_threats) else "safe"
+        vcls = "red" if len(live_threats) else "green"
+        st.markdown(f"""<div class="metric-card {cls}">
+            <div class="metric-label">Threats Found</div>
+            <div class="metric-value {vcls}">{len(live_threats)}</div>
+        </div>""", unsafe_allow_html=True)
+    with lc3:
+        t60_cls = "critical" if len(threats_60) else "safe"
+        t60_vcls = "red" if len(threats_60) else "green"
+        st.markdown(f"""<div class="metric-card {t60_cls}">
+            <div class="metric-label">Threats (last 60s)</div>
+            <div class="metric-value {t60_vcls}">{len(threats_60)}</div>
+        </div>""", unsafe_allow_html=True)
+    with lc4:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-label">Data Exfiltrated</div>
+            <div class="metric-value orange">{total_mb:.1f} MB</div>
+        </div>""", unsafe_allow_html=True)
+    with lc5:
+        a_cls = "warning" if attackers else "safe"
+        a_vcls = "orange" if attackers else "green"
+        st.markdown(f"""<div class="metric-card {a_cls}">
+            <div class="metric-label">Active Attackers</div>
+            <div class="metric-value {a_vcls}">{attackers}</div>
+        </div>""", unsafe_allow_html=True)
+
+    # ── Rolling scatter (last 300 events) ────────────────────────────────────
+    st.markdown("#### 📈 Rolling Event Stream")
+    recent300 = live_df.sort_values("timestamp", ascending=False).head(300).copy()
+    fig_live = px.scatter(
+        recent300, x="timestamp", y="risk_score",
+        color="anomaly_label", size_max=20,
+        color_discrete_map=_colours,
+        hover_data=["source_ip", "dest_ip", "dest_port"],
+        labels={"risk_score": "Risk Score", "anomaly_label": "Type"},
+    )
+    fig_live.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(13,21,38,0.6)",
+        font=dict(color="#c8d6e5", family="Rajdhani"),
+        margin=dict(l=10, r=10, t=30, b=10), height=280,
+        legend=dict(orientation="h", yanchor="bottom", y=1.01),
+        xaxis=dict(gridcolor="#1e3a5f"),
+        yaxis=dict(gridcolor="#1e3a5f", range=[0, 105]),
+    )
+    st.plotly_chart(fig_live, use_container_width=True, key="live_scatter")
+
+    # ── Recent alerts feed ────────────────────────────────────────────────────
+    col_alerts, col_table = st.columns([1, 2])
+
+    with col_alerts:
+        st.markdown("#### 🚨 Latest Alerts")
+        recent_thr = live_threats.sort_values("timestamp", ascending=False).head(12)
+        if len(recent_thr) == 0:
+            st.markdown("""<div style="background:#051a0d;border:1px solid #00ff88;
+                border-radius:8px;padding:1rem;font-family:'Share Tech Mono',monospace;
+                font-size:0.78rem;color:#00ff88;text-align:center;">
+                ✅ No threats in current window</div>""", unsafe_allow_html=True)
+        for _, row in recent_thr.iterrows():
+            sev_c = "#ff4444" if row["risk_score"] >= 70 else "#ffaa00"
+            lbl   = row["anomaly_label"]
+            col_c = _colours.get(lbl, "#8b949e")
+            st.markdown(f"""
+            <div style="background:#0d1526;border-left:4px solid {sev_c};
+                        border-radius:0 8px 8px 0;padding:0.45rem 0.9rem;
+                        margin-bottom:0.3rem;font-family:'Share Tech Mono',monospace;
+                        font-size:0.72rem;color:#c8d6e5;line-height:1.7;">
+                <b style="color:{sev_c};">[{row['risk_score']}/100]</b>
+                <span style="color:{col_c};"> {lbl}</span><br>
+                {row['source_ip']} → {row['dest_ip']}:{row['dest_port']}
+                <span style="color:#4a7a9b;"> {row['timestamp'].strftime('%H:%M:%S')}</span>
+            </div>""", unsafe_allow_html=True)
+
+    with col_table:
+        st.markdown("#### 📋 Latest 40 Events")
+        live_cols = ["timestamp", "source_ip", "dest_ip", "dest_port",
+                     "protocol", "bytes_sent", "action", "anomaly_label", "risk_score"]
+        live_show = recent300.head(40)[live_cols].copy()
+        live_show["timestamp"] = live_show["timestamp"].dt.strftime("%H:%M:%S")
+        st.dataframe(live_show, use_container_width=True, height=340, key="live_table")
+
+    # ── Status bar ────────────────────────────────────────────────────────────
+    st.markdown(f"""
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;
+                color:#4a7a9b;text-align:center;padding:0.4rem;margin-top:0.5rem;
+                background:#0d1526;border-radius:8px;border:1px solid #1e3a5f;">
+        🔄 Panel refreshes every 5s (page stays still) &nbsp;·&nbsp;
+        📊 {len(live_df):,} total events &nbsp;·&nbsp;
+        🚨 {len(live_threats)} threats &nbsp;·&nbsp;
+        🕒 {datetime.now().strftime('%H:%M:%S')}
+    </div>""", unsafe_allow_html=True)
+
+
+with tab6:
+    # Auto-click this tab if live feed was active when page last loaded
+    import streamlit.components.v1 as _stc
+    if st.session_state.get("_live_feed_on"):
+        _stc.html("""
+        <script>
+        (function() {
+            function clickLiveTab() {
+                const tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+                if (tabs.length >= 6) {
+                    tabs[5].click();   // index 5 = 6th tab = Live Feed
+                    return true;
+                }
+                return false;
+            }
+            // Try immediately, then retry until tabs are rendered
+            if (!clickLiveTab()) {
+                const iv = setInterval(function() {
+                    if (clickLiveTab()) clearInterval(iv);
+                }, 100);
+                setTimeout(function() { clearInterval(iv); }, 3000);
+            }
+        })();
+        </script>
+        """, height=0)
+
+    _live_feed_panel()
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""

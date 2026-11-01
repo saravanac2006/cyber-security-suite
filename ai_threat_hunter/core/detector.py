@@ -48,30 +48,30 @@ class ThreatDetector:
 
     def _engineer_features(self, df: pd.DataFrame) -> np.ndarray:
         protocols = df["protocol"].fillna("UNKNOWN")
-        actions = df["action"].fillna("ALLOW")
+        actions   = df["action"].fillna("ALLOW")
 
         self._protocol_enc.fit(protocols)
         self._action_enc.fit(actions)
 
-        # Connection rate: how many times does each source_ip appear (per-window)
-        conn_rate = df.groupby("source_ip")["source_ip"].transform("count")
-
-        # Unique dest ports per source IP (signals scanning)
+        # Connection rate and unique dest ports per source IP
+        conn_rate    = df.groupby("source_ip")["source_ip"].transform("count")
         unique_ports = df.groupby("source_ip")["dest_port"].transform("nunique")
 
         bytes_sent = np.log1p(df["bytes_sent"].clip(0))
         bytes_recv = np.log1p(df["bytes_recv"].clip(0))
-        duration = np.log1p(df["duration"].clip(0))
-        ratio = np.log1p(
-            df["bytes_sent"] / (df["bytes_recv"] + 1)
-        )
+        ratio      = np.log1p(df["bytes_sent"] / (df["bytes_recv"] + 1))
+
+        # Optional columns — fill with 0 if not present in the log file
+        duration    = np.log1p(df["duration"].clip(0))    if "duration"    in df.columns else np.zeros(len(df))
+        source_port = df["source_port"].fillna(0)          if "source_port" in df.columns else np.zeros(len(df))
+        dest_port   = df["dest_port"].fillna(0)
 
         X = np.column_stack([
             bytes_sent,
             bytes_recv,
             duration,
-            df["dest_port"].fillna(0),
-            df["source_port"].fillna(0),
+            dest_port,
+            source_port,
             self._protocol_enc.transform(protocols),
             self._action_enc.transform(actions),
             ratio,
