@@ -8,15 +8,15 @@ import streamlit as st
 
 # ── Built-in key pool ─────────────────────────────────────────────────────────
 _GROQ_KEYS: list[str] = [
-    # Add your Groq API keys here (gsk_...), or use the sidebar "Backup Key" input
+    # Add Groq keys here (gsk_...) or use the sidebar "AI API Key" input
 ]
 
 _CLAUDE_KEYS: list[str] = [
-    # Add your Claude API keys here (sk-ant-... or apikey_...)
+    # Add Claude keys here (sk-ant-... or apikey_...)
 ]
 
 _GEMINI_KEYS: list[str] = [
-    # Add your Gemini API keys here (AIza... or AQ....)
+    # Add Gemini keys here (AIza... or AQ....)
 ]
 
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "keys_config.json")

@@ -6,7 +6,7 @@ import json
 import os
 
 _CLAUDE_KEYS: list[str] = [
-    # Add your Claude API keys here, or use the sidebar "Backup AI Key" input
+    # Add Claude keys here (sk-ant-... or apikey_...)
 ]
 
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "keys_config.json")

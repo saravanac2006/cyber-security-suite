@@ -859,34 +859,46 @@ with st.sidebar:
             ✅ AI Vision Analysis Active<br>
             <span style="color:#8b949e;font-size:0.65rem;">{ok_count} of {total} engines ready</span>
         </div>""", unsafe_allow_html=True)
+    elif total == 0:
+        st.markdown("""
+        <div style="background:#0d1526;border:1px solid #1e3a5f;border-radius:8px;
+                    padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
+                    font-size:0.75rem;color:#8ab0c8;text-align:center;line-height:1.8;">
+            🔑 No API keys configured<br>
+            <span style="color:#4a7a9b;font-size:0.65rem;">Paste a key below to enable AI analysis</span>
+        </div>""", unsafe_allow_html=True)
     else:
         st.markdown("""
         <div style="background:#1a1200;border:1px solid #ffaa00;border-radius:8px;
                     padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
                     font-size:0.75rem;color:#ffaa00;text-align:center;line-height:1.8;">
             ⚠️ All AI engines exhausted<br>
-            <span style="color:#8b949e;font-size:0.65rem;">Using heuristic analysis</span>
+            <span style="color:#8b949e;font-size:0.65rem;">Paste a fresh key below to continue</span>
         </div>""", unsafe_allow_html=True)
 
     # ── Backup key input ──────────────────────────────────────────────────────
     st.markdown("---")
-    st.markdown("**🔑 Backup Key** *(optional)*")
+    st.markdown("**🔑 AI API Key**")
     st.markdown("""
     <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;
                 color:#8b949e;line-height:1.6;margin-bottom:0.5rem;">
-    If all engines are exhausted, paste your own API key here.
-    It will be tested and saved automatically.
+    Paste any Groq / Claude / Gemini API key.<br>
+    Auto-detected by prefix and saved for the session.
     </div>""", unsafe_allow_html=True)
 
     backup_key_input = st.text_input(
-        "Backup API Key",
+        "AI API Key",
         type="password",
-        placeholder="Paste any AI API key here…",
+        placeholder="gsk_...  /  sk-ant-...  /  AIza...",
         label_visibility="collapsed",
-        help="Accepts any vision AI API key — auto-detected and saved on success",
+        help="Groq (gsk_) · Claude (sk-ant-) · Gemini (AIza) — any vision-capable key",
         key="_backup_key_input",
     )
     if backup_key_input:
+        prev = st.session_state.get("_backup_key", "")
+        if backup_key_input != prev:
+            # New key entered — reset its status so it gets a fresh attempt
+            st.session_state.setdefault("_key_status", {})[backup_key_input.strip()] = "ok"
         st.session_state["_backup_key"] = backup_key_input
     else:
         st.session_state.setdefault("_backup_key", "")
@@ -963,22 +975,35 @@ def _apply_sensitivity(res: dict) -> dict:
 def _build_analyzer(provider: str, key: str):
     """Instantiate the right analyzer for the given provider and key."""
     if provider == "groq" and GROQ_AVAILABLE:
-        models, err = list_groq_models(key)
-        if err or not models:
-            return None
-        return GroqAnalyzer(key, models[0])
+        # Use hardcoded model; try listing only to pick the best available
+        model = "llama-3.2-90b-vision-preview"
+        try:
+            models, err = list_groq_models(key)
+            if models and not err:
+                model = models[0]
+        except Exception:
+            pass
+        return GroqAnalyzer(key, model)
     if provider == "gemini" and GEMINI_AVAILABLE:
         from core.gemini_analyzer import list_available_models, GeminiAnalyzer as _GA
-        models, err = list_available_models(key)
-        if err or not models:
-            return None
-        return _GA(key, models[0])
+        model = "gemini-1.5-pro"
+        try:
+            models, err = list_available_models(key)
+            if models and not err:
+                model = models[0]
+        except Exception:
+            pass
+        return _GA(key, model)
     if provider == "claude" and CLAUDE_AVAILABLE:
         from core.claude_analyzer import list_claude_models, ClaudeAnalyzer as _CA
-        models, err = list_claude_models(key)
-        if err or not models:
-            return None
-        return _CA(key, models[0])
+        model = "claude-3-5-sonnet-20241022"
+        try:
+            models, err = list_claude_models(key)
+            if models and not err:
+                model = models[0]
+        except Exception:
+            pass
+        return _CA(key, model)
     return None
 
 

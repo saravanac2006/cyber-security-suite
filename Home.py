@@ -218,8 +218,10 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.markdown("---")
+    if st.button("📖  Help & Docs", key="btn_help_side"):
+        st.switch_page("pages/3_Help.py")
     st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#4a7a9b;line-height:1.8;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#4a7a9b;line-height:1.8;margin-top:0.6rem;">
         Use the sidebar navigation<br>above or the launch buttons<br>on the main page.
     </div>
     """, unsafe_allow_html=True)
@@ -310,6 +312,13 @@ with col_right:
     """, unsafe_allow_html=True)
     if st.button("🛡️  Launch AI Threat Hunter", key="btn_threat"):
         st.switch_page("pages/2_AI_Threat_Hunter.py")
+
+# ── Help button ───────────────────────────────────────────────────────────────
+st.markdown("<br>", unsafe_allow_html=True)
+_, col_help, _ = st.columns([2, 1, 2])
+with col_help:
+    if st.button("📖  Help & Documentation", key="btn_help_main"):
+        st.switch_page("pages/3_Help.py")
 
 # ── How it works ──────────────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)

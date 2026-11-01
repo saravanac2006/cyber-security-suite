@@ -30,3 +30,6 @@ desktop.ini
 
 # Logs
 *.log
+
+# Runtime-generated files
+ai_threat_hunter/live_feed.csv
