@@ -1,0 +1,12 @@
+streamlit==1.39.0
+opencv-python
+numpy
+pillow
+plotly
+scikit-image
+scipy
+pandas
+PyMuPDF
+google-genai
+groq
+anthropic

@@ -1,0 +1,15 @@
+streamlit>=1.39.0
+pandas
+numpy
+plotly
+opencv-python-headless
+Pillow
+anthropic
+google-genai
+groq
+scikit-learn
+scipy
+matplotlib
+openpyxl
+PyMuPDF
+pyzbar
