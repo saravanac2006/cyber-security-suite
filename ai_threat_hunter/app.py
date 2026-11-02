@@ -414,11 +414,7 @@ def _run_analysis(df: pd.DataFrame, sensitivity: float) -> pd.DataFrame:
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown('<div class="sidebar-logo">🛡️ THREAT HUNTER</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-
-    st.markdown("**📁 Data Source**")
-    data_mode = st.radio("Mode", ["📂 Upload / Sample", "📡 Live Feed"], horizontal=True)
+    data_mode = st.radio("Data Source", ["📂 Upload / Sample", "📡 Live Feed"], horizontal=True)
 
     uploaded_file = None
     use_sample = False
@@ -436,61 +432,32 @@ with st.sidebar:
         if os.path.exists(_LIVE_FILE):
             _live_size = os.path.getsize(_LIVE_FILE)
             _live_rows = max(0, sum(1 for _ in open(_LIVE_FILE)) - 1)
-            st.markdown(f"""
-            <div style="background:#051a0d;border:1px solid #00ff88;border-radius:8px;
-                        padding:0.5rem 1rem;font-family:'Share Tech Mono',monospace;
-                        font-size:0.72rem;color:#00ff88;text-align:center;line-height:1.9;">
-                📡 LIVE FEED CONNECTED<br>
-                <span style="color:#8ab0c8;">{_live_rows:,} events · {_live_size/1024:.1f} KB</span>
-            </div>""", unsafe_allow_html=True)
+            st.caption(f"📡 Live — {_live_rows:,} events · {_live_size/1024:.1f} KB")
         else:
-            st.markdown("""
-            <div style="background:#1a1200;border:1px solid #ffaa00;border-radius:8px;
-                        padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
-                        font-size:0.72rem;color:#ffaa00;line-height:1.8;">
-                ⚠️ No live feed found.<br>Run in a terminal:<br>
-                <code style="color:#00d4ff;">python live_log_generator.py</code>
-            </div>""", unsafe_allow_html=True)
+            st.caption("⚠️ No live feed. Run `python live_log_generator.py`")
         refresh_secs = st.slider("Auto-refresh every", 5, 60, 10, step=5,
                                  format="%d sec", key="_live_refresh")
         st.caption(f"Dashboard refreshes every {refresh_secs}s automatically")
 
-    st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-
-    # ── AI Engine status ──────────────────────────────────────────────────────
-    st.markdown("**🤖 AI Engine**")
+    st.markdown("---")
     backup_key = st.text_input(
-        "Backup AI Key",
+        "AI API Key",
         type="password",
-        placeholder="Paste any AI API key here…",
-        label_visibility="collapsed",
-        help="Optional — the engine has built-in keys. Add yours as backup.",
+        placeholder="Paste any AI key…",
+        help="Optional — adds to the built-in key pool.",
         key="_backup_key",
     )
     user_key = backup_key or ""
-
     if pool_ready(user_key):
-        st.markdown("""
-        <div style="background:#051a0d;border:1px solid #00ff88;border-radius:8px;
-                    padding:0.5rem 1rem;font-family:'Share Tech Mono',monospace;
-                    font-size:0.72rem;color:#00ff88;text-align:center;">
-            ✅ AI Analysis Engine Active
-        </div>""", unsafe_allow_html=True)
+        st.caption("✅ AI engine active")
     else:
-        st.markdown("""
-        <div style="background:#1a1200;border:1px solid #ffaa00;border-radius:8px;
-                    padding:0.5rem 1rem;font-family:'Share Tech Mono',monospace;
-                    font-size:0.72rem;color:#ffaa00;text-align:center;">
-            ⚠️ AI engines exhausted — rule-based fallback
-        </div>""", unsafe_allow_html=True)
+        st.caption("⚠️ AI exhausted — rule-based fallback")
 
-    st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-    st.markdown("**⚙️ Detection Settings**")
+    st.markdown("---")
     sensitivity_raw = st.slider("Sensitivity", 1, 10, 5, help="Higher = more alerts detected")
     sensitivity = sensitivity_raw / 20.0
     st.session_state["_sensitivity"] = sensitivity
 
-    st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
     threat_filter = st.multiselect(
         "Filter Threat Types",
         ["Port Scan", "Brute Force", "Data Exfiltration", "C2 / Suspicious", "Anomalous Traffic"],

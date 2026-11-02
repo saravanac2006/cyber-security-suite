@@ -802,21 +802,6 @@ def render_technical_tabs(result: dict, img: np.ndarray):
 # ── sidebar ───────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown("""
-    <div style="text-align:center;padding:1rem 0;">
-        <div style="font-size:3rem;">🔍</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;
-                    background:linear-gradient(135deg,#00d4ff,#00ff88);
-                    -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-            DEEPFAKE DETECTOR
-        </div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;
-                    color:#4a9eff;letter-spacing:3px;">v2.0 · AI VISION EDITION</div>
-    </div>
-    <hr style="border-color:#1e3a5f;margin:0.5rem 0 1rem 0;">
-    """, unsafe_allow_html=True)
-
-    st.markdown("**📁 Upload Media**")
     media_type = st.radio("Media type", ["Image", "Video", "PDF / Document", "Screenshot"], horizontal=False)
 
     uploaded = None
@@ -845,46 +830,15 @@ with st.sidebar:
 
     # ── AI Engine status ──────────────────────────────────────────────────────
     st.markdown("---")
-    st.markdown("**🤖 AI Engine**")
-
     stats = pool_stats(st.session_state.get("_backup_key", ""))
     ok_count = stats["ok"]
     total = stats["total"]
-
     if ok_count > 0:
-        st.markdown(f"""
-        <div style="background:#051a0d;border:1px solid #00ff88;border-radius:8px;
-                    padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
-                    font-size:0.75rem;color:#00ff88;text-align:center;line-height:1.8;">
-            ✅ AI Vision Analysis Active<br>
-            <span style="color:#8b949e;font-size:0.65rem;">{ok_count} of {total} engines ready</span>
-        </div>""", unsafe_allow_html=True)
+        st.caption(f"✅ AI active — {ok_count}/{total} engines ready")
     elif total == 0:
-        st.markdown("""
-        <div style="background:#0d1526;border:1px solid #1e3a5f;border-radius:8px;
-                    padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
-                    font-size:0.75rem;color:#8ab0c8;text-align:center;line-height:1.8;">
-            🔑 No API keys configured<br>
-            <span style="color:#4a7a9b;font-size:0.65rem;">Paste a key below to enable AI analysis</span>
-        </div>""", unsafe_allow_html=True)
+        st.caption("🔑 No API keys — paste one below")
     else:
-        st.markdown("""
-        <div style="background:#1a1200;border:1px solid #ffaa00;border-radius:8px;
-                    padding:0.6rem 1rem;font-family:'Share Tech Mono',monospace;
-                    font-size:0.75rem;color:#ffaa00;text-align:center;line-height:1.8;">
-            ⚠️ All AI engines exhausted<br>
-            <span style="color:#8b949e;font-size:0.65rem;">Paste a fresh key below to continue</span>
-        </div>""", unsafe_allow_html=True)
-
-    # ── Backup key input ──────────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown("**🔑 AI API Key**")
-    st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;
-                color:#8b949e;line-height:1.6;margin-bottom:0.5rem;">
-    Paste any Groq / Claude / Gemini API key.<br>
-    Auto-detected by prefix and saved for the session.
-    </div>""", unsafe_allow_html=True)
+        st.caption("⚠️ All engines exhausted — paste a fresh key")
 
     backup_key_input = st.text_input(
         "AI API Key",
@@ -905,30 +859,12 @@ with st.sidebar:
 
     # ── Settings ──────────────────────────────────────────────────────────────
     st.markdown("---")
-    sensitivity = st.slider("🎚️ Detection Sensitivity", 1, 10, 5,
+    sensitivity = st.slider("Sensitivity", 1, 10, 5,
                              help="Higher = more sensitive, more false positives")
-    mode = st.radio("⚡ Analysis Mode", ["Fast", "Thorough"], horizontal=True)
+    mode = st.radio("Mode", ["Fast", "Thorough"], horizontal=True)
     max_frames = 10 if mode == "Fast" else 30
 
-    demo_btn = st.button("🧪 Analyze Demo (Synthetic Fake)", use_container_width=True)
-
-    st.markdown("---")
-    with st.expander("ℹ️ How it works"):
-        st.markdown("""
-**Multi-layered AI analysis:**
-
-🤖 **Vision AI** — Multiple AI engines analyse the image for GAN artifacts, manipulation traces, and synthetic patterns.
-
-🔬 **Frequency Domain** — Real photos follow 1/f distribution. Synthetic images deviate from this natural pattern.
-
-🧩 **Compression Artifacts** — Deepfakes show unnatural DCT block boundaries at 8-pixel intervals.
-
-📡 **Noise Pattern** — AI outputs show unnaturally uniform noise vs. organic camera sensor noise.
-
-🎨 **Color Distribution** — Synthetic images have distinctive HSV channel distributions.
-
-⏱️ **Temporal Consistency** — Frame-to-frame consistency checks for video deepfakes.
-        """)
+    demo_btn = st.button("🧪 Analyze Demo", use_container_width=True)
 
 # ── header ────────────────────────────────────────────────────────────────────
 

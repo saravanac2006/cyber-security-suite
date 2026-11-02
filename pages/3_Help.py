@@ -145,50 +145,19 @@ pre code { border: none !important; background: transparent !important; }
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("""
-    <div style="text-align:center;padding:1rem 0 0.6rem;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:1.1rem;
-                    color:#00ff88;letter-spacing:3px;">📖 HELP</div>
-        <div style="font-size:0.62rem;color:#4a7a9b;letter-spacing:2px;margin-top:4px;">
-            DOCUMENTATION
-        </div>
-    </div>
-    <hr style="border-color:#1e3a5f;margin:0.4rem 0 1rem 0;">
-    """, unsafe_allow_html=True)
-    if st.button("🏠  Back to Home", key="back_home"):
+    if st.button("🏠 Home", key="back_home"):
         st.switch_page("Home.py")
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🔍  Deepfake Detector", key="go_deep"):
+    if st.button("🔍 Deepfake Detector", key="go_deep"):
         st.switch_page("pages/1_Deepfake_Detector.py")
-    if st.button("🛡️  AI Threat Hunter", key="go_hunt"):
+    if st.button("🛡️ AI Threat Hunter", key="go_hunt"):
         st.switch_page("pages/2_AI_Threat_Hunter.py")
-
-    st.markdown("---")
-    st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#4a7a9b;line-height:2;">
-        📄 Table of Contents<br>
-        1. Installation<br>
-        2. Running the App<br>
-        3. Deepfake Detector<br>
-        4. AI Threat Hunter<br>
-        5. Live Feed Setup<br>
-        6. API Key Setup<br>
-        7. Troubleshooting<br>
-        8. Project Structure<br>
-        9. Demo Scripts<br>
-        10. MITRE ATT&amp;CK Framework<br>
-        11. FAQ
-    </div>
-    """, unsafe_allow_html=True)
-
-    # PDF download
     st.markdown("---")
     pdf_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                             "Cyber_Security_Suite_Project.pdf")
     if os.path.exists(pdf_path):
         with open(pdf_path, "rb") as f:
             st.download_button(
-                label="📥 Download PDF Docs",
+                label="📥 Download PDF",
                 data=f.read(),
                 file_name="Cyber_Security_Suite_Project.pdf",
                 mime="application/pdf",

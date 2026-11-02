@@ -197,34 +197,8 @@ section[data-testid="stSidebar"] * { color: #c8d6e5 !important; }
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("""
-    <div style="text-align:center;padding:1.2rem 0 0.8rem;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:1.3rem;
-                    color:#00ff88;letter-spacing:3px;">🔐 CYBER SUITE</div>
-        <div style="font-size:0.65rem;color:#4a7a9b;letter-spacing:2px;margin-top:4px;">
-            AI SECURITY TOOLS 2026
-        </div>
-    </div>
-    <hr style="border-color:#1e3a5f;margin:0.5rem 0 1rem 0;">
-    """, unsafe_allow_html=True)
-    st.markdown("**Navigate to a tool:**")
-    st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;
-                color:#8ab0c8;line-height:2.2;">
-        🔍 &nbsp;<b style="color:#ff8800;">Deepfake Detector</b><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;→ AI media forensics<br>
-        🛡️ &nbsp;<b style="color:#00d4ff;">AI Threat Hunter</b><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;→ Network threat detection
-    </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-    if st.button("📖  Help & Docs", key="btn_help_side"):
+    if st.button("📖 Help & Docs", key="btn_help_side"):
         st.switch_page("pages/3_Help.py")
-    st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#4a7a9b;line-height:1.8;margin-top:0.6rem;">
-        Use the sidebar navigation<br>above or the launch buttons<br>on the main page.
-    </div>
-    """, unsafe_allow_html=True)
 
 # ── Hero ──────────────────────────────────────────────────────────────────────
 st.markdown("""
