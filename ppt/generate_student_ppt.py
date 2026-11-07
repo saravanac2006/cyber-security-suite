@@ -92,7 +92,7 @@ def header(sl, title, subtitle="", accent=NAVY):
         t(sl, subtitle, Inches(0.3), Inches(0.68), W - Inches(0.6), Inches(0.33),
           size=11, color=MGREY)
 
-def footer(sl, num, total=7, names="Varunprasad V  &  Sakthivel Rajan"):
+def footer(sl, num, total=6, names="Varunprasad V  &  Sakthivel Rajan"):
     FH = Inches(0.26)
     box(sl, 0, H - FH, W, FH, LGREY)
     t(sl, names, Inches(0.3), H - FH + Inches(0.04),
@@ -458,64 +458,16 @@ footer(sl, 5)
 
 
 # ════════════════════════════════════════════════════════════════════
-# SLIDE 6 — TECHNOLOGY STACK
+# SLIDE 6 — DEMO & KEY TAKEAWAYS  (PPT1 demo + PPT2 DNS insights)
 # ════════════════════════════════════════════════════════════════════
 sl = prs.slides.add_slide(BLANK)
 box(sl, 0, 0, W, H, WHITE)
-header(sl, "Technology Stack", "Open-source libraries — no proprietary frameworks required", BLUE)
+header(sl, "Demo & Key Takeaways", "Live demonstration steps  +  DNS Spoofing insights from PPT 2", NAVY)
 
-groups = [
-    (BLUE,   "🌐", "Application Layer",
-     ["Python 3.10+", "Streamlit 1.39+", "Pandas / NumPy"]),
-    (RED,    "📷", "Media & Vision",
-     ["OpenCV 4.x", "Pillow (PIL)", "PyMuPDF (fitz)"]),
-    (TEAL,   "🌲", "Threat Detection",
-     ["Scikit-learn 1.4+", "Isolation Forest", "Log parsing (CSV/JSON/syslog)"]),
-    (ORANGE, "🤖", "AI Providers",
-     ["Groq — Llama Vision", "Anthropic Claude", "Google Gemini"]),
-    (GREEN,  "📊", "Visualisation",
-     ["Plotly 5.x", "Streamlit fragments", "Network graph"]),
-    (NAVY,   "🔑", "Key Management",
-     ["Key rotation pool", "keys_config.json (gitignored)", "Heuristic fallback"]),
-]
-
-COLS = 3
-CARD_W3 = (W - Inches(0.7)) / COLS - Inches(0.06)
-CARD_H3 = Inches(1.95)
-for i, (accent, icon, group, libs) in enumerate(groups):
-    col = i % COLS; row = i // COLS
-    cx = Inches(0.3) + col * (CARD_W3 + Inches(0.1))
-    cy = Inches(1.2) + row * (CARD_H3 + Inches(0.1))
-    bg = {BLUE: LBLUE, RED: LRED, TEAL: LTEAL,
-          ORANGE: LORANGE, GREEN: LGRN, NAVY: LGREY}[accent]
-    box(sl, cx, cy, CARD_W3, CARD_H3, bg, accent, 1.5)
-    box(sl, cx, cy, CARD_W3, Inches(0.42), accent)
-    t(sl, f"{icon}  {group}", cx + Inches(0.1), cy + Inches(0.08),
-      CARD_W3 - Inches(0.2), Inches(0.32), size=11, bold=True, color=WHITE)
-    for j, lib in enumerate(libs):
-        ly = cy + Inches(0.52) + j * Inches(0.42)
-        oval(sl, cx + Inches(0.14), ly + Inches(0.13), Inches(0.14), Inches(0.14), accent)
-        t(sl, lib, cx + Inches(0.36), ly + Inches(0.04),
-          CARD_W3 - Inches(0.46), Inches(0.36), size=10.5, color=DARK)
-
-# Launch box
-box(sl, Inches(0.3), Inches(5.6), W - Inches(0.6), Inches(0.56), NAVY)
-t(sl, "Launch:   pip install -r requirements.txt     then     python -m streamlit run Home.py     →     http://localhost:8501",
-  Inches(0.5), Inches(5.68), W - Inches(1.0), Inches(0.42),
-  size=11, color=WHITE)
-
-footer(sl, 6)
-
-
-# ════════════════════════════════════════════════════════════════════
-# SLIDE 7 — DEMO & KEY TAKEAWAYS
-# ════════════════════════════════════════════════════════════════════
-sl = prs.slides.add_slide(BLANK)
-box(sl, 0, 0, W, H, WHITE)
-header(sl, "Demo & Key Takeaways", "What to show and what we built", NAVY)
-
-# Left: Demo steps
+MGREY2 = RGBColor(0xCC, 0xD5, 0xE0)
 half3 = (W - Inches(0.7)) / 2
+
+# ── LEFT: Demo steps ──────────────────────────────────────────────
 tag(sl, Inches(0.3), Inches(1.18), half3, "  QUICK DEMO STEPS", NAVY)
 
 demo = [
@@ -530,46 +482,76 @@ demo = [
 for i, (col, title, body) in enumerate(demo):
     ry = Inches(1.52) + i * Inches(0.68)
     bg = LGREY if i % 2 == 0 else WHITE
-    box(sl, Inches(0.3), ry, half3, Inches(0.64), bg, MID_GREY := RGBColor(0xCC,0xD5,0xE0), 0.5)
+    box(sl, Inches(0.3), ry, half3, Inches(0.64), bg, MGREY2, 0.5)
     oval(sl, Inches(0.37), ry + Inches(0.18), Inches(0.28), Inches(0.28), col)
-    t(sl, str(i+1), Inches(0.37), ry + Inches(0.18), Inches(0.28), Inches(0.28),
+    t(sl, str(i + 1), Inches(0.37), ry + Inches(0.18), Inches(0.28), Inches(0.28),
       size=10, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
     multiline(sl, [
-        (title, 10, True,  col,  PP_ALIGN.LEFT),
+        (title, 10,   True,  col,  PP_ALIGN.LEFT),
         (body,  9.5, False, DARK, PP_ALIGN.LEFT),
     ], Inches(0.74), ry + Inches(0.06), half3 - Inches(0.52), Inches(0.56))
 
-# Right: Key takeaways
+# ── RIGHT: PPT2 — DNS Spoofing & Phishing takeaways ───────────────
 RX3 = Inches(0.4) + half3
-tag(sl, RX3, Inches(1.18), half3 - Inches(0.1), "  KEY TAKEAWAYS", GREEN)
+RW3 = half3 - Inches(0.1)
 
-takeaways = [
-    (GREEN,  "Zero training data",    "Isolation Forest detects threats on day one\nwith no labelled dataset — works immediately."),
-    (RED,    "No single point of failure", "Groq → Claude → Gemini key rotation with\nheuristic fallback when all APIs are down."),
-    (ORANGE, "DNS insight",           "DNS spoofing exploits name-to-IP trust.\nPasskeys and DNSSEC break the attack chain."),
-    (NAVY,   "One platform",          "Media forensics + network detection in a\nsingle Streamlit app — one launch command."),
-    (TEAL,   "Real-time ready",       "Live Feed + @st.fragment refresh every 5s\n— full page never reloads, stays responsive."),
+tag(sl, RX3, Inches(1.18), RW3, "  DNS SPOOFING & PHISHING — KEY INSIGHTS  (PPT 2)", ORANGE)
+
+# Key takeaway callout box
+box(sl, RX3, Inches(1.52), RW3, Inches(0.78), LORANGE, ORANGE, 1.5)
+box(sl, RX3, Inches(1.52), Inches(0.07), Inches(0.78), ORANGE)
+t(sl, "DNS spoofing steers the name to the wrong place.\nPhishing exploits trust in what appears.\nProtect DNS and use authentication an impostor cannot fool.",
+  RX3 + Inches(0.18), Inches(1.57), RW3 - Inches(0.26), Inches(0.68),
+  size=10, color=DARK, italic=True)
+
+# Decision flow: where attack succeeds or fails
+tag(sl, RX3, Inches(2.42), RW3, "  WHERE ATTACK SUCCEEDS OR FAILS", RED)
+flow = [
+    (RED,    "Victim opens impostor page",        "Browser shows real hostname — no visible sign"),
+    (RED,    "No valid certificate?",             "Connection blocked — attack fails here"),
+    (ORANGE, "No passkey / origin-checking mgr?", "Credentials stolen — attack succeeds"),
+    (GREEN,  "Passkey or manager present?",        "Autofill refused — attack is blocked"),
 ]
-for i, (col, title, body) in enumerate(takeaways):
-    ry = Inches(1.52) + i * Inches(0.95)
-    bg = LGRN if i % 2 == 0 else WHITE
-    box(sl, RX3, ry, half3 - Inches(0.1), Inches(0.9), bg, col, 1.2)
-    box(sl, RX3, ry, Inches(0.07), Inches(0.9), col)
-    t(sl, title, RX3 + Inches(0.18), ry + Inches(0.06), half3 - Inches(0.36), Inches(0.3),
-      size=11, bold=True, color=col)
-    t(sl, body, RX3 + Inches(0.18), ry + Inches(0.38), half3 - Inches(0.36), Inches(0.48),
-      size=9.5, color=DARK)
+for i, (col, label, detail) in enumerate(flow):
+    ry = Inches(2.74) + i * Inches(0.65)
+    bg = LRED if i % 2 == 0 else WHITE
+    box(sl, RX3, ry, RW3, Inches(0.61), bg, RGBColor(0xF0, 0xC0, 0xBB), 0.6)
+    box(sl, RX3, ry, Inches(0.07), Inches(0.61), col)
+    t(sl, label,  RX3 + Inches(0.18), ry + Inches(0.04), RW3 - Inches(0.26), Inches(0.28),
+      size=9.5, bold=True, color=col)
+    t(sl, detail, RX3 + Inches(0.18), ry + Inches(0.32), RW3 - Inches(0.26), Inches(0.26),
+      size=9, color=DARK)
+
+# Defence pipeline — 5 steps from PPT2
+tag(sl, RX3, Inches(5.4), RW3, "  DEFENCE PIPELINE  (PPT 2 — Varunprasad V & Sakthivel Rajan)", GREEN)
+defences = [
+    ("🛡️", "Protect DNS",   "DNSSEC · DoH / DoT · reputable resolvers"),
+    ("🔒", "Secure Infra",  "MFA · strong creds · patch · change alerts"),
+    ("🗝️", "Strong Auth",   "Passkeys · password manager · no reuse"),
+    ("📡", "Monitor",       "DNS changes · cert warnings · odd logins"),
+    ("🔄", "Respond",       "Change passwords · revoke sessions · notify"),
+]
+dw = RW3 / len(defences)
+for i, (icon, title, body) in enumerate(defences):
+    dx2 = RX3 + i * dw
+    box(sl, dx2, Inches(5.72), dw - Inches(0.04), Inches(0.9),
+        LGRN if i % 2 == 0 else WHITE, GREEN, 0.7)
+    multiline(sl, [
+        (icon,   13, True,  GREEN, PP_ALIGN.CENTER),
+        (title,   8, True,  GREEN, PP_ALIGN.CENTER),
+        (body,    7, False, DARK,  PP_ALIGN.CENTER),
+    ], dx2 + Inches(0.03), Inches(5.74), dw - Inches(0.1), Inches(0.86))
 
 # Thank you banner
-box(sl, Inches(0.3), Inches(6.6), W - Inches(0.6), Inches(0.56), NAVY)
-multiline(sl, [
-    ("Thank You  ", 14, True, WHITE, PP_ALIGN.CENTER),
-], Inches(0.3), Inches(6.63), W * 0.4, Inches(0.46))
+box(sl, Inches(0.3), Inches(6.74), W - Inches(0.6), Inches(0.46), NAVY)
+t(sl, "Thank You",
+  Inches(0.3), Inches(6.78), W * 0.35, Inches(0.38),
+  size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 t(sl, "Varunprasad V  &  Sakthivel Rajan  |  2026 Cyber Security Competition",
-  W * 0.4, Inches(6.68), W * 0.55, Inches(0.42),
+  W * 0.35, Inches(6.81), W * 0.6, Inches(0.34),
   size=10, color=MGREY, align=PP_ALIGN.RIGHT)
 
-footer(sl, 7)
+footer(sl, 6, total=6)
 
 
 # ── Save ─────────────────────────────────────────────────────────────────────
