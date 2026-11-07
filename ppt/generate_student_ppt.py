@@ -159,39 +159,35 @@ t(sl, "2026 Cyber Security Competition",
   Inches(2.1), Inches(1.65), Inches(7), Inches(0.35),
   size=12, color=MGREY, italic=True)
 
-# Two tool cards
-CARD_W = (W - Inches(0.9)) / 2 - Inches(0.08)
-# Deepfake card
-box(sl, Inches(0.3), Inches(2.3), CARD_W, Inches(2.1), RGBColor(0x14, 0x0C, 0x0C), RED, 1.8)
-box(sl, Inches(0.3), Inches(2.3), CARD_W, Inches(0.38), RED)
-t(sl, "01   DEEPFAKE DETECTOR", Inches(0.42), Inches(2.35), CARD_W - Inches(0.2), Inches(0.3),
-  size=13, bold=True, color=WHITE)
-t(sl, "Detects AI-generated and manipulated media\nImages  •  Videos  •  PDFs  •  Screenshots\nGroq  •  Claude  •  Gemini  •  Heuristic fallback",
-  Inches(0.42), Inches(2.75), CARD_W - Inches(0.2), Inches(1.55),
-  size=11.5, color=MGREY)
+# Three topic cards
+CARD_W = (W - Inches(0.6)) / 3 - Inches(0.1)
+GAP    = Inches(0.15)
+CARD_H = Inches(2.1)
+CARD_Y = Inches(2.3)
 
-# Threat Hunter card
-RX = Inches(0.3) + CARD_W + Inches(0.16)
-box(sl, RX, Inches(2.3), CARD_W, Inches(2.1), RGBColor(0x07, 0x14, 0x14), TEAL, 1.8)
-box(sl, RX, Inches(2.3), CARD_W, Inches(0.38), TEAL)
-t(sl, "02   AI THREAT HUNTER", RX + Inches(0.12), Inches(2.35), CARD_W - Inches(0.2), Inches(0.3),
-  size=13, bold=True, color=WHITE)
-t(sl, "Detects unusual network behaviour using ML\nCSV  •  JSON  •  Syslog  •  Live Feed\nIsolation Forest  •  MITRE ATT&CK  •  IR Playbook",
-  RX + Inches(0.12), Inches(2.75), CARD_W - Inches(0.2), Inches(1.55),
-  size=11.5, color=MGREY)
-
-# Bottom: DNS topic teaser
-box(sl, Inches(0.3), Inches(4.6), W - Inches(0.6), Inches(0.46), RGBColor(0xE8, 0xF4, 0xFF))
-t(sl, "Also covers:   DNS Spoofing & Phishing — how attacks work and how to defend against them",
-  Inches(0.5), Inches(4.65), W - Inches(1.0), Inches(0.36),
-  size=11, color=NAVY, bold=False)
+cover_cards = [
+    ("01", "DEEPFAKE DETECTOR",   RGBColor(0x14,0x0C,0x0C), RED,
+     "Detects AI-generated and manipulated media\nImages  •  Videos  •  PDFs  •  Screenshots\nGroq  •  Claude  •  Gemini  •  Heuristic fallback"),
+    ("02", "AI THREAT HUNTER",    RGBColor(0x07,0x14,0x14), TEAL,
+     "Detects unusual network behaviour using ML\nCSV  •  JSON  •  Syslog  •  Live Feed\nIsolation Forest  •  MITRE ATT&CK  •  IR Playbook"),
+    ("03", "DNS SPOOFING & PHISHING", RGBColor(0x14,0x0A,0x00), ORANGE,
+     "How attackers redirect DNS to fake servers\nAttack chain  •  Decision flow  •  Defences\nDNSSEC  •  Passkeys  •  DoH / DoT  •  MFA"),
+]
+for i, (num, label, bg_dark, accent, body) in enumerate(cover_cards):
+    cx = Inches(0.3) + i * (CARD_W + GAP)
+    box(sl, cx, CARD_Y, CARD_W, CARD_H, bg_dark, accent, 1.8)
+    box(sl, cx, CARD_Y, CARD_W, Inches(0.38), accent)
+    t(sl, f"{num}   {label}", cx + Inches(0.12), CARD_Y + Inches(0.07),
+      CARD_W - Inches(0.2), Inches(0.28), size=11, bold=True, color=WHITE)
+    t(sl, body, cx + Inches(0.12), CARD_Y + Inches(0.48),
+      CARD_W - Inches(0.2), Inches(1.55), size=10.5, color=MGREY)
 
 # Team names
 t(sl, "Varunprasad V  &  Sakthivel Rajan",
-  Inches(0.3), Inches(5.2), Inches(7), Inches(0.38),
+  Inches(0.3), Inches(4.62), Inches(7), Inches(0.38),
   size=13, bold=True, color=NAVY)
 t(sl, "Cyber Security Suite  |  2026 Competition Project",
-  Inches(0.3), Inches(5.6), Inches(8), Inches(0.3),
+  Inches(0.3), Inches(5.02), Inches(8), Inches(0.3),
   size=10, color=MGREY)
 
 footer(sl, 1)
@@ -462,7 +458,7 @@ footer(sl, 5)
 # ════════════════════════════════════════════════════════════════════
 sl = prs.slides.add_slide(BLANK)
 box(sl, 0, 0, W, H, WHITE)
-header(sl, "Demo & Key Takeaways", "Live demonstration steps  +  DNS Spoofing insights from PPT 2", NAVY)
+header(sl, "Demo & Key Takeaways", "Live demonstration steps  +  DNS Spoofing & Phishing insights", NAVY)
 
 MGREY2 = RGBColor(0xCC, 0xD5, 0xE0)
 half3 = (W - Inches(0.7)) / 2
@@ -495,7 +491,7 @@ for i, (col, title, body) in enumerate(demo):
 RX3 = Inches(0.4) + half3
 RW3 = half3 - Inches(0.1)
 
-tag(sl, RX3, Inches(1.18), RW3, "  DNS SPOOFING & PHISHING — KEY INSIGHTS  (PPT 2)", ORANGE)
+tag(sl, RX3, Inches(1.18), RW3, "  DNS SPOOFING & PHISHING — KEY INSIGHTS", ORANGE)
 
 # Key takeaway callout box
 box(sl, RX3, Inches(1.52), RW3, Inches(0.78), LORANGE, ORANGE, 1.5)
@@ -523,7 +519,7 @@ for i, (col, label, detail) in enumerate(flow):
       size=9, color=DARK)
 
 # Defence pipeline — 5 steps from PPT2
-tag(sl, RX3, Inches(5.4), RW3, "  DEFENCE PIPELINE  (PPT 2 — Varunprasad V & Sakthivel Rajan)", GREEN)
+tag(sl, RX3, Inches(5.4), RW3, "  DEFENCE PIPELINE", GREEN)
 defences = [
     ("🛡️", "Protect DNS",   "DNSSEC · DoH / DoT · reputable resolvers"),
     ("🔒", "Secure Infra",  "MFA · strong creds · patch · change alerts"),
