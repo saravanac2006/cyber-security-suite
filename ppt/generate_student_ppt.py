@@ -182,13 +182,18 @@ for i, (num, label, bg_dark, accent, body) in enumerate(cover_cards):
     t(sl, body, cx + Inches(0.12), CARD_Y + Inches(0.48),
       CARD_W - Inches(0.2), Inches(1.55), size=10.5, color=MGREY)
 
-# Team names
+# School + Team names
+box(sl, Inches(0.3), Inches(4.6), W - Inches(0.6), Inches(1.62), LGREY, MGREY, 0.5)
+t(sl, "Sitadevi Garodia Hindu Vidyalaya Mat.Hr.Sec.School",
+  Inches(0.5), Inches(4.68), W - Inches(1.0), Inches(0.42),
+  size=14, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+box(sl, Inches(0.3), Inches(5.1), W - Inches(0.6), Inches(0.04), CYAN)
 t(sl, "Varunprasad V  &  Sakthivel Rajan",
-  Inches(0.3), Inches(4.62), Inches(7), Inches(0.38),
-  size=13, bold=True, color=NAVY)
+  Inches(0.5), Inches(5.18), W - Inches(1.0), Inches(0.36),
+  size=12, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
 t(sl, "Cyber Security Suite  |  2026 Competition Project",
-  Inches(0.3), Inches(5.02), Inches(8), Inches(0.3),
-  size=10, color=MGREY)
+  Inches(0.5), Inches(5.54), W - Inches(1.0), Inches(0.3),
+  size=10, color=MGREY, align=PP_ALIGN.CENTER)
 
 footer(sl, 1)
 
