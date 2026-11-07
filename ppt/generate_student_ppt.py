@@ -84,21 +84,21 @@ def multiline(sl, lines, x, y, w, h):
 
 def header(sl, title, subtitle="", accent=NAVY):
     """Standard slide header bar."""
-    box(sl, 0, 0, W, Inches(1.05), accent)
-    box(sl, 0, Inches(1.05), Inches(0.07), H - Inches(1.05), accent)  # left stripe
-    t(sl, title, Inches(0.3), Inches(0.14), W - Inches(0.6), Inches(0.55),
-      size=24, bold=True, color=WHITE)
+    box(sl, 0, 0, W, Inches(1.15), accent)
+    box(sl, 0, Inches(1.15), Inches(0.07), H - Inches(1.15), accent)  # left stripe
+    t(sl, title, Inches(0.3), Inches(0.1), W - Inches(0.6), Inches(0.6),
+      size=28, bold=True, color=WHITE)
     if subtitle:
-        t(sl, subtitle, Inches(0.3), Inches(0.68), W - Inches(0.6), Inches(0.33),
-          size=11, color=MGREY)
+        t(sl, subtitle, Inches(0.3), Inches(0.72), W - Inches(0.6), Inches(0.36),
+          size=13, color=MGREY)
 
 def footer(sl, num, total=6, names="Varunprasad V  &  Sakthivel Rajan"):
-    FH = Inches(0.26)
+    FH = Inches(0.28)
     box(sl, 0, H - FH, W, FH, LGREY)
     t(sl, names, Inches(0.3), H - FH + Inches(0.04),
-      W - Inches(2.5), FH, size=8, color=MGREY)
+      W - Inches(2.5), FH, size=9, color=MGREY)
     t(sl, f"Slide {num} / {total}", W - Inches(1.5), H - FH + Inches(0.04),
-      Inches(1.3), FH, size=8, color=MGREY, align=PP_ALIGN.RIGHT)
+      Inches(1.3), FH, size=9, color=MGREY, align=PP_ALIGN.RIGHT)
 
 def bullet(sl, items, x, y, w, row_h=Inches(0.52), *,
            dot_color=BLUE, size=11.5):
@@ -126,9 +126,9 @@ def step_box(sl, x, y, w, h, num, title, body, fill, accent):
     ], x + Inches(0.58), y + Inches(0.08), w - Inches(0.68), h - Inches(0.1))
 
 def tag(sl, x, y, w, label, fill):
-    box(sl, x, y, w, Inches(0.28), fill)
-    t(sl, label, x + Inches(0.1), y + Inches(0.04), w - Inches(0.2), Inches(0.22),
-      size=9, bold=True, color=WHITE)
+    box(sl, x, y, w, Inches(0.32), fill)
+    t(sl, label, x + Inches(0.1), y + Inches(0.05), w - Inches(0.2), Inches(0.26),
+      size=11, bold=True, color=WHITE)
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -146,18 +146,14 @@ t(sl, "CS", Inches(0.45), Inches(0.55), Inches(1.3), Inches(0.9),
   size=32, bold=True, color=CYAN, align=PP_ALIGN.CENTER)
 
 # Title
-t(sl, "CYBER SECURITY SUITE", Inches(2.1), Inches(0.4), Inches(9), Inches(0.65),
-  size=36, bold=True, color=WHITE)
+t(sl, "CYBER SECURITY SUITE", Inches(2.1), Inches(0.35), Inches(9), Inches(0.7),
+  size=40, bold=True, color=WHITE)
 t(sl, "Two AI-Powered Tools. One Security Platform.",
-  Inches(2.1), Inches(1.0), Inches(9), Inches(0.4),
-  size=15, color=MGREY)
+  Inches(2.1), Inches(1.05), Inches(9), Inches(0.45),
+  size=17, color=MGREY)
 
 # Cyan line
-box(sl, Inches(2.1), Inches(1.52), Inches(5.5), Inches(0.05), CYAN)
-
-t(sl, "2026 Cyber Security Competition",
-  Inches(2.1), Inches(1.65), Inches(7), Inches(0.35),
-  size=12, color=MGREY, italic=True)
+box(sl, Inches(2.1), Inches(1.6), Inches(5.5), Inches(0.05), CYAN)
 
 # Three topic cards
 CARD_W = (W - Inches(0.6)) / 3 - Inches(0.1)
@@ -178,22 +174,22 @@ for i, (num, label, bg_dark, accent, body) in enumerate(cover_cards):
     box(sl, cx, CARD_Y, CARD_W, CARD_H, bg_dark, accent, 1.8)
     box(sl, cx, CARD_Y, CARD_W, Inches(0.38), accent)
     t(sl, f"{num}   {label}", cx + Inches(0.12), CARD_Y + Inches(0.07),
-      CARD_W - Inches(0.2), Inches(0.28), size=11, bold=True, color=WHITE)
+      CARD_W - Inches(0.2), Inches(0.3), size=13, bold=True, color=WHITE)
     t(sl, body, cx + Inches(0.12), CARD_Y + Inches(0.48),
-      CARD_W - Inches(0.2), Inches(1.55), size=10.5, color=MGREY)
+      CARD_W - Inches(0.2), Inches(1.55), size=12, color=MGREY)
 
 # School + Team names
 box(sl, Inches(0.3), Inches(4.6), W - Inches(0.6), Inches(1.62), LGREY, MGREY, 0.5)
 t(sl, "Sitadevi Garodia Hindu Vidyalaya Mat.Hr.Sec.School",
-  Inches(0.5), Inches(4.68), W - Inches(1.0), Inches(0.42),
-  size=14, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
-box(sl, Inches(0.3), Inches(5.1), W - Inches(0.6), Inches(0.04), CYAN)
+  Inches(0.5), Inches(4.66), W - Inches(1.0), Inches(0.5),
+  size=16, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+box(sl, Inches(0.3), Inches(5.16), W - Inches(0.6), Inches(0.04), CYAN)
 t(sl, "Varunprasad V  &  Sakthivel Rajan",
-  Inches(0.5), Inches(5.18), W - Inches(1.0), Inches(0.36),
-  size=12, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
-t(sl, "Cyber Security Suite  |  2026 Competition Project",
-  Inches(0.5), Inches(5.54), W - Inches(1.0), Inches(0.3),
-  size=10, color=MGREY, align=PP_ALIGN.CENTER)
+  Inches(0.5), Inches(5.24), W - Inches(1.0), Inches(0.42),
+  size=14, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+t(sl, "Cyber Security Suite  |  Competition Project",
+  Inches(0.5), Inches(5.66), W - Inches(1.0), Inches(0.34),
+  size=12, color=MGREY, align=PP_ALIGN.CENTER)
 
 footer(sl, 1)
 
@@ -223,13 +219,13 @@ for i, (accent, icon, title, body, note) in enumerate(problems):
     box(sl, Inches(0.3), py, W - Inches(0.6), BOX_H, LGREY, accent, 1.5)
     box(sl, Inches(0.3), py, Inches(0.6), BOX_H, accent)
     t(sl, icon, Inches(0.3), py + Inches(0.42), Inches(0.6), Inches(0.6),
-      size=22, align=PP_ALIGN.CENTER, color=WHITE)
+      size=24, align=PP_ALIGN.CENTER, color=WHITE)
     t(sl, title, Inches(1.0), py + Inches(0.1), Inches(4.5), Inches(0.4),
-      size=13, bold=True, color=accent)
+      size=15, bold=True, color=accent)
     t(sl, body, Inches(1.0), py + Inches(0.5), Inches(7.5), Inches(0.72),
-      size=10.5, color=DARK)
+      size=12, color=DARK)
     t(sl, f"  ! {note}", Inches(8.7), py + Inches(0.5), Inches(4.0), Inches(0.72),
-      size=9.5, color=accent, italic=True)
+      size=11, color=accent, italic=True)
 
 footer(sl, 2)
 
@@ -257,9 +253,9 @@ px = Inches(0.3)
 for i, (icon, title, sub) in enumerate(steps):
     box(sl, px, Inches(1.2), bw, Inches(0.95), LRED, RED, 1.2)
     multiline(sl, [
-        (icon,  13, True,  RED,   PP_ALIGN.CENTER),
-        (title, 10, True,  DARK,  PP_ALIGN.CENTER),
-        (sub,    8, False, MGREY, PP_ALIGN.CENTER),
+        (icon,  15, True,  RED,   PP_ALIGN.CENTER),
+        (title, 12, True,  DARK,  PP_ALIGN.CENTER),
+        (sub,   10, False, MGREY, PP_ALIGN.CENTER),
     ], px + Inches(0.04), Inches(1.22), bw - Inches(0.08), Inches(0.9))
     px += bw
     if i < n - 1:
@@ -287,17 +283,17 @@ for i, (num, name, detail) in enumerate(dims):
     box(sl, cx, cy, half, Inches(0.9), bg, RGBColor(0xF0, 0xC0, 0xC0), 0.7)
     box(sl, cx, cy, Inches(0.44), Inches(0.9), RED)
     t(sl, num, cx, cy + Inches(0.24), Inches(0.44), Inches(0.44),
-      size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+      size=16, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
     t(sl, name, cx + Inches(0.5), cy + Inches(0.08), half - Inches(0.58), Inches(0.33),
-      size=10.5, bold=True, color=RED)
+      size=12, bold=True, color=RED)
     t(sl, detail, cx + Inches(0.5), cy + Inches(0.44), half - Inches(0.58), Inches(0.4),
-      size=9, color=DARK)
+      size=11, color=DARK)
 
 # Verdict strip
 box(sl, Inches(0.3), Inches(6.47), W - Inches(0.6), Inches(0.47), NAVY)
 t(sl, "Verdict:   FAKE  |  AUTHENTIC  |  INCONCLUSIVE   —   with AI confidence score 0–100%  &  manipulation type",
   Inches(0.5), Inches(6.52), W - Inches(1.0), Inches(0.38),
-  size=10.5, color=WHITE, bold=False)
+  size=12, color=WHITE, bold=False)
 
 footer(sl, 3)
 
@@ -322,9 +318,9 @@ px = Inches(0.3)
 for i, (icon, title, sub) in enumerate(steps2):
     box(sl, px, Inches(1.2), bw2, Inches(0.95), LTEAL, TEAL, 1.2)
     multiline(sl, [
-        (icon,  13, True,  TEAL,  PP_ALIGN.CENTER),
-        (title, 10, True,  DARK,  PP_ALIGN.CENTER),
-        (sub,    8, False, MGREY, PP_ALIGN.CENTER),
+        (icon,  15, True,  TEAL,  PP_ALIGN.CENTER),
+        (title, 12, True,  DARK,  PP_ALIGN.CENTER),
+        (sub,   10, False, MGREY, PP_ALIGN.CENTER),
     ], px + Inches(0.04), Inches(1.22), bw2 - Inches(0.08), Inches(0.9))
     px += bw2
     if i < len(steps2) - 1:
@@ -348,11 +344,11 @@ for i, (name, mitre, detail) in enumerate(threats):
     bg = LTEAL if i % 2 == 0 else WHITE
     box(sl, Inches(0.3), ry, half2, Inches(0.74), bg, RGBColor(0xA0, 0xD5, 0xD0), 0.7)
     t(sl, name,   Inches(0.42), ry + Inches(0.06), half2 - Inches(0.3), Inches(0.3),
-      size=10.5, bold=True, color=TEAL)
+      size=12, bold=True, color=TEAL)
     t(sl, mitre,  Inches(0.42), ry + Inches(0.38), Inches(2.4), Inches(0.3),
-      size=9, bold=True, color=NAVY)
+      size=11, bold=True, color=NAVY)
     t(sl, detail, Inches(2.9),  ry + Inches(0.38), half2 - Inches(2.68), Inches(0.3),
-      size=9.5, color=DARK)
+      size=11, color=DARK)
 
 # Right: IR Playbook phases
 tag(sl, Inches(0.3) + half2 + Inches(0.1), Inches(2.28),
@@ -370,11 +366,11 @@ for i, (time, phase, action) in enumerate(ir):
     box(sl, rx2, ry, half2, Inches(0.74), bg, RGBColor(0xA8, 0xC4, 0xE8), 0.7)
     box(sl, rx2, ry, Inches(0.9), Inches(0.74), NAVY)
     t(sl, time, rx2, ry + Inches(0.22), Inches(0.9), Inches(0.32),
-      size=8, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+      size=10, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
     t(sl, phase,  rx2 + Inches(0.98), ry + Inches(0.06), half2 - Inches(1.1), Inches(0.3),
-      size=10.5, bold=True, color=NAVY)
+      size=12, bold=True, color=NAVY)
     t(sl, action, rx2 + Inches(0.98), ry + Inches(0.38), half2 - Inches(1.1), Inches(0.3),
-      size=9.5, color=DARK)
+      size=11, color=DARK)
 
 footer(sl, 4)
 
@@ -408,9 +404,9 @@ for i, (num, title, detail, col) in enumerate(attack_steps):
     t(sl, num, ax, ay + Inches(0.17), Inches(0.42), Inches(0.4),
       size=16, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
     t(sl, title, ax + Inches(0.5), ay + Inches(0.06), SW3/2 - Inches(0.6), Inches(0.3),
-      size=10, bold=True, color=col)
+      size=12, bold=True, color=col)
     t(sl, detail, ax + Inches(0.5), ay + Inches(0.36), SW3/2 - Inches(0.6), Inches(0.3),
-      size=9, color=DARK)
+      size=11, color=DARK)
 
 # How DNS gets spoofed — 5 ways
 DX = Inches(6.1)
@@ -429,13 +425,13 @@ for i, way in enumerate(spoof_ways):
     box(sl, DX, ry, DW, Inches(0.56), bg, RGBColor(0xF0,0xBB,0xBB), 0.6)
     oval(sl, DX + Inches(0.1), ry + Inches(0.17), Inches(0.22), Inches(0.22), RED)
     t(sl, way, DX + Inches(0.42), ry + Inches(0.1), DW - Inches(0.52), Inches(0.38),
-      size=10.5, color=DARK)
+      size=12, color=DARK)
 
 # Key point callout
 box(sl, Inches(0.3), Inches(4.78), W - Inches(0.6), Inches(0.46), LRED, RED, 1.2)
 t(sl, "Key point:  The browser connects by IP address, not name — whoever controls the DNS answer controls the destination.",
   Inches(0.5), Inches(4.84), W - Inches(1.0), Inches(0.36),
-  size=10.5, color=RED, bold=False, italic=True)
+  size=12, color=RED, bold=False, italic=True)
 
 # Defence pipeline
 tag(sl, Inches(0.3), Inches(5.38), Inches(3.5), "  DEFENCE PIPELINE", GREEN)
@@ -451,8 +447,8 @@ for i, (title, body) in enumerate(defences):
     box(sl, dx2, Inches(5.68), dw - Inches(0.06), Inches(0.76),
         LGRN, GREEN, 0.8)
     multiline(sl, [
-        (title, 10, True,  GREEN, PP_ALIGN.CENTER),
-        (body,   8, False, DARK,  PP_ALIGN.CENTER),
+        (title, 12, True,  GREEN, PP_ALIGN.CENTER),
+        (body,  10, False, DARK,  PP_ALIGN.CENTER),
     ], dx2 + Inches(0.06), Inches(5.72), dw - Inches(0.16), Inches(0.68))
 
 footer(sl, 5)
@@ -488,8 +484,8 @@ for i, (col, title, body) in enumerate(demo):
     t(sl, str(i + 1), Inches(0.37), ry + Inches(0.18), Inches(0.28), Inches(0.28),
       size=10, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
     multiline(sl, [
-        (title, 10,   True,  col,  PP_ALIGN.LEFT),
-        (body,  9.5, False, DARK, PP_ALIGN.LEFT),
+        (title, 12,  True,  col,  PP_ALIGN.LEFT),
+        (body,  11, False, DARK, PP_ALIGN.LEFT),
     ], Inches(0.74), ry + Inches(0.06), half3 - Inches(0.52), Inches(0.56))
 
 # ── RIGHT: PPT2 — DNS Spoofing & Phishing takeaways ───────────────
@@ -503,7 +499,7 @@ box(sl, RX3, Inches(1.52), RW3, Inches(0.78), LORANGE, ORANGE, 1.5)
 box(sl, RX3, Inches(1.52), Inches(0.07), Inches(0.78), ORANGE)
 t(sl, "DNS spoofing steers the name to the wrong place.\nPhishing exploits trust in what appears.\nProtect DNS and use authentication an impostor cannot fool.",
   RX3 + Inches(0.18), Inches(1.57), RW3 - Inches(0.26), Inches(0.68),
-  size=10, color=DARK, italic=True)
+  size=12, color=DARK, italic=True)
 
 # Decision flow: where attack succeeds or fails
 tag(sl, RX3, Inches(2.42), RW3, "  WHERE ATTACK SUCCEEDS OR FAILS", RED)
@@ -519,9 +515,9 @@ for i, (col, label, detail) in enumerate(flow):
     box(sl, RX3, ry, RW3, Inches(0.61), bg, RGBColor(0xF0, 0xC0, 0xBB), 0.6)
     box(sl, RX3, ry, Inches(0.07), Inches(0.61), col)
     t(sl, label,  RX3 + Inches(0.18), ry + Inches(0.04), RW3 - Inches(0.26), Inches(0.28),
-      size=9.5, bold=True, color=col)
+      size=11, bold=True, color=col)
     t(sl, detail, RX3 + Inches(0.18), ry + Inches(0.32), RW3 - Inches(0.26), Inches(0.26),
-      size=9, color=DARK)
+      size=10.5, color=DARK)
 
 # Defence pipeline — 5 steps from PPT2
 tag(sl, RX3, Inches(5.4), RW3, "  DEFENCE PIPELINE", GREEN)
@@ -538,19 +534,19 @@ for i, (icon, title, body) in enumerate(defences):
     box(sl, dx2, Inches(5.72), dw - Inches(0.04), Inches(0.9),
         LGRN if i % 2 == 0 else WHITE, GREEN, 0.7)
     multiline(sl, [
-        (icon,   13, True,  GREEN, PP_ALIGN.CENTER),
-        (title,   8, True,  GREEN, PP_ALIGN.CENTER),
-        (body,    7, False, DARK,  PP_ALIGN.CENTER),
+        (icon,   15, True,  GREEN, PP_ALIGN.CENTER),
+        (title,  10, True,  GREEN, PP_ALIGN.CENTER),
+        (body,    9, False, DARK,  PP_ALIGN.CENTER),
     ], dx2 + Inches(0.03), Inches(5.74), dw - Inches(0.1), Inches(0.86))
 
 # Thank you banner
 box(sl, Inches(0.3), Inches(6.74), W - Inches(0.6), Inches(0.46), NAVY)
 t(sl, "Thank You",
   Inches(0.3), Inches(6.78), W * 0.35, Inches(0.38),
-  size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-t(sl, "Varunprasad V  &  Sakthivel Rajan  |  2026 Cyber Security Competition",
+  size=16, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+t(sl, "Varunprasad V  &  Sakthivel Rajan  |  Sitadevi Garodia Hindu Vidyalaya",
   W * 0.35, Inches(6.81), W * 0.6, Inches(0.34),
-  size=10, color=MGREY, align=PP_ALIGN.RIGHT)
+  size=11, color=MGREY, align=PP_ALIGN.RIGHT)
 
 footer(sl, 6, total=6)
 
